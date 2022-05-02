@@ -12,6 +12,7 @@
 #include <i2c_bus.h>
 #include <sensors/proximity.h>
 #include <motors.h>
+#include <leds.h>
 #include <camera/po8030.h>
 #include <chprintf.h>
 #include <sensors/imu.h>
@@ -46,7 +47,7 @@ int main(void)
     halInit();
     chSysInit();
 
-    imu_start();
+//    imu_start();
 
     //starts the serial communication
     serial_start();
@@ -65,6 +66,7 @@ int main(void)
     while (1) {
 
                 if(get_prox(5) >= 100){
+                	set_led(LED7, 1);
 					right_motor_set_pos(0);
 					left_motor_set_pos(0);
 					right_motor_set_speed(300);
@@ -72,6 +74,7 @@ int main(void)
 					while(right_motor_get_pos() != 325 && left_motor_get_pos() != -325);
                 }
                 if(get_prox(2) >= 100){
+                	set_led(LED3, 1);
 					right_motor_set_pos(0);
 					left_motor_set_pos(0);
 					right_motor_set_speed(-300);
@@ -79,12 +82,14 @@ int main(void)
 					while(right_motor_get_pos() != -325 && left_motor_get_pos() != 325);
                 }
                 if(get_prox(0) >= 100){
+                	set_led(LED1, 1);
 					right_motor_set_pos(0);
 					left_motor_set_pos(0);
 					right_motor_set_speed(300);
 					left_motor_set_speed(300);
 					while(right_motor_get_pos() != 325 && left_motor_get_pos() != 325);
                 }
+                clear_leds();
 				right_motor_set_pos(0);
 				left_motor_set_pos(0);
 				right_motor_set_speed(0);
