@@ -15,7 +15,7 @@
 #include <leds.h>
 #include <camera/po8030.h>
 #include <chprintf.h>
-#include <sensors/imu.h>
+#include <spi_comm.h>
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -57,6 +57,7 @@ int main(void)
 	motors_init();
 	//start IR sensors
 	proximity_start();
+//	spi_comm_start();
 
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
@@ -65,43 +66,75 @@ int main(void)
 
     while (1) {
 
+    			if(get_prox(5) >= 100 && get_prox(2) >= 100 && get_prox(0) >= 100){
+    				set_body_led(1);
+    				chThdSleepMilliseconds(2000);
+    				continue;
+    			}else
                 if(get_prox(5) >= 100){
+					right_motor_set_speed(300);
+					left_motor_set_speed(300);
                 	set_led(LED7, 1);
+    				chThdSleepMilliseconds(1000);
+                	set_led(LED7, 0);
+    				chThdSleepMilliseconds(1000);
+                	set_led(LED7, 1);
+    				chThdSleepMilliseconds(1000);
+                	set_led(LED7, 0);
+    				chThdSleepMilliseconds(1000);
+    				set_led(LED7, 1);
 					right_motor_set_pos(0);
 					left_motor_set_pos(0);
 					right_motor_set_speed(300);
 					left_motor_set_speed(-300);
 					while(right_motor_get_pos() != 325 && left_motor_get_pos() != -325);
-                }
+                } else
                 if(get_prox(2) >= 100){
+					right_motor_set_speed(300);
+					left_motor_set_speed(300);
+                	set_led(LED3, 1);
+    				chThdSleepMilliseconds(1000);
+                	set_led(LED3, 0);
+    				chThdSleepMilliseconds(1000);
+                	set_led(LED3, 1);
+    				chThdSleepMilliseconds(1000);
+                	set_led(LED3, 0);
+    				chThdSleepMilliseconds(1000);
                 	set_led(LED3, 1);
 					right_motor_set_pos(0);
 					left_motor_set_pos(0);
 					right_motor_set_speed(-300);
 					left_motor_set_speed(300);
 					while(right_motor_get_pos() != -325 && left_motor_get_pos() != 325);
-                }
-                if(get_prox(0) >= 100){
-                	set_led(LED1, 1);
+                } else
+                if(get_prox(0) >= 100 || get_prox(7) >= 100){
+                	set_front_led(1);
 					right_motor_set_pos(0);
 					left_motor_set_pos(0);
 					right_motor_set_speed(300);
 					left_motor_set_speed(300);
 					while(right_motor_get_pos() != 325 && left_motor_get_pos() != 325);
+                } else
+                if(get_prox(3) >= 100){
+                	set_rgb_led(LED2, 0, 1, 0);
+                	set_rgb_led(LED4, 0, 1, 0);
+                	set_rgb_led(LED6, 0, 1, 0);
+                	set_rgb_led(LED8, 0, 1, 0);
+                } else
+                if(get_prox(4) >= 100){
+                	toggle_rgb_led(LED2, BLUE_LED, 1);
+                	toggle_rgb_led(LED4, BLUE_LED, 1);
+                	toggle_rgb_led(LED6, BLUE_LED, 1);
+                	toggle_rgb_led(LED8, BLUE_LED, 1);
                 }
-                clear_leds();
+            	set_front_led(0);
+    			set_body_led(0);
+            	clear_leds();
 				right_motor_set_pos(0);
 				left_motor_set_pos(0);
 				right_motor_set_speed(0);
 				left_motor_set_speed(0);
 
-
-//    	if(get_gyro(0) > 0){
-//			right_motor_set_pos(0);
-//			left_motor_set_pos(0);
-//			right_motor_set_speed(300);
-//			left_motor_set_speed(300);
-//    	}
     }
 }
 
