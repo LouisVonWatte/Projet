@@ -18,7 +18,7 @@
 #include <pi_regulator.h>
 #include <process_image.h>
 
-//Louis commented this
+//kyan commented this
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
