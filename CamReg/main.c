@@ -18,6 +18,8 @@
 #include <pi_regulator.h>
 #include <process_image.h>
 
+//André commented this
+
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
