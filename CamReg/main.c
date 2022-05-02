@@ -94,6 +94,7 @@ uintptr_t __stack_chk_guard = STACK_CHK_GUARD;
 */
 
 //}
+
 void __stack_chk_fail(void)
 {
     chSysHalt("Stack smashing detected");
