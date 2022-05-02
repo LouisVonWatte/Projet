@@ -8,17 +8,13 @@
 #include "memory_protection.h"
 #include <usbcfg.h>
 #include <main.h>
+#include <msgbus/messagebus.h>
+#include <i2c_bus.h>
+#include <sensors/proximity.h>
 #include <motors.h>
 #include <camera/po8030.h>
 #include <chprintf.h>
-#include <sensors/proximity.h>
-#include <msgbus/messagebus.h>
-
-
-#include <pi_regulator.h>
-#include <process_image.h>
-
-//kyan commented this
+#include <sensors/imu.h>
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -43,59 +39,69 @@ static void serial_start(void)
 	sdStart(&SD3, &ser_cfg); // UART3.
 }
 
+
 int main(void)
 {
 
     halInit();
     chSysInit();
-    mpu_init();
+
+    imu_start();
 
     //starts the serial communication
     serial_start();
     //start the USB communication
     usb_start();
-    //starts the camera
-    dcmi_start();
-	po8030_start();
 	//inits the motors
 	motors_init();
-	// init IR sensors
+	//start IR sensors
 	proximity_start();
-	//stars the threads for the pi regulator and the processing of the image
-	pi_regulator_start();
-	process_image_start();
 
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
-    /* Infinite loop. */
+	calibrate_ir();
+//	calibrate_gyro();
+
     while (1) {
-    	//waits 1 second
-  //  	proxy(&prox_values);
-        chThdSleepMilliseconds(1000);
+
+                if(get_prox(5) >= 100){
+					right_motor_set_pos(0);
+					left_motor_set_pos(0);
+					right_motor_set_speed(300);
+					left_motor_set_speed(-300);
+					while(right_motor_get_pos() != 325 && left_motor_get_pos() != -325);
+                }
+                if(get_prox(2) >= 100){
+					right_motor_set_pos(0);
+					left_motor_set_pos(0);
+					right_motor_set_speed(-300);
+					left_motor_set_speed(300);
+					while(right_motor_get_pos() != -325 && left_motor_get_pos() != 325);
+                }
+                if(get_prox(0) >= 100){
+					right_motor_set_pos(0);
+					left_motor_set_pos(0);
+					right_motor_set_speed(300);
+					left_motor_set_speed(300);
+					while(right_motor_get_pos() != 325 && left_motor_get_pos() != 325);
+                }
+				right_motor_set_pos(0);
+				left_motor_set_pos(0);
+				right_motor_set_speed(0);
+				left_motor_set_speed(0);
+
+
+//    	if(get_gyro(0) > 0){
+//			right_motor_set_pos(0);
+//			left_motor_set_pos(0);
+//			right_motor_set_speed(300);
+//			left_motor_set_speed(300);
+//    	}
     }
 }
 
 #define STACK_CHK_GUARD 0xe2dee396
 uintptr_t __stack_chk_guard = STACK_CHK_GUARD;
-
-/*void proxy(proximity_msg_t *prox_values){
-	uint8_t led7 = 0;
-
-	unsigned int *ambi = prox_values->ambient;
-	unsigned int *refl = prox_values->reflected;
-
-	if(ambi[PROXIMITY_NB_CHANNELS] !=0){
-		led7 = 1;
-	}
-	 //to see the duration on the console
-	 chprintf((BaseSequentialStream *)&SD3, "time = %dus\n",time);
-	 //we invert the values because a led is turned on if the signal is low
-	 palWritePad(GPIOD, GPIOD_LED1, led1 ? 0 : 1);
-
-
-*/
-
-//}
 
 void __stack_chk_fail(void)
 {
