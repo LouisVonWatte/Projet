@@ -60,7 +60,6 @@ int main(void)
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
 	calibrate_ir();
-//	calibrate_gyro();
 
     while (1) {
 
@@ -73,6 +72,7 @@ int main(void)
     				continue;
     			}
                 if(get_prox(5) >= 100){
+        			set_body_led(0);
                 	set_front_led(1);
 					right_motor_set_speed(300);
 					left_motor_set_speed(300);
@@ -94,6 +94,7 @@ int main(void)
 					continue;
                 }
                 if(get_prox(2) >= 100){
+        			set_body_led(0);
                 	set_front_led(1);
 					right_motor_set_speed(300);
 					left_motor_set_speed(300);
