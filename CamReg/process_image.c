@@ -80,7 +80,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 			image_green[i/2] = (((uint8_t)img_buff_1[i]&0x07)<< 5)+(((uint8_t)img_buff_2[i]&0xE0)>> 5);
 		}
       red = color_line(image_red);
-      blue = color_line(image_blue);
+      blue = color_line(image_blue); //color
       green = color_line(image_green);
     }
 }
