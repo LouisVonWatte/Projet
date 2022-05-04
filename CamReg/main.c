@@ -26,7 +26,6 @@
 #define WHEEL_PERIMETER 12.9	//about 1000 steps
 #define ROBOT_SIZE 7.1
 
-
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
@@ -236,7 +235,6 @@ int main(void)
 //		}
 //		right_motor_set_speed(0);
 //		left_motor_set_speed(0);
-
 
     }
 }
