@@ -9,10 +9,29 @@
 #include <process_image.h>
 
 
-static float distance_cm = 0;
+static int red, blue, green  = 0;
+static uint16_t line_position = IMAGE_BUFFER_SIZE/2;	//middle
 
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
+
+/*
+ *  Returns the line's width extracted from the image buffer given
+ *  Returns 0 if line not found
+ */
+
+uint8_t color_line(uint8_t *buffer){
+
+	uint32_t mean_color = 0;
+
+	for(uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
+			mean_color += buffer[i];
+		}
+		mean_color /= IMAGE_BUFFER_SIZE;
+
+	return mean_color;
+}
+
 
 static THD_WORKING_AREA(waCaptureImage, 256);
 static THD_FUNCTION(CaptureImage, arg) {
@@ -36,30 +55,48 @@ static THD_FUNCTION(CaptureImage, arg) {
     }
 }
 
-
-static THD_WORKING_AREA(waProcessImage, 1024);
+static THD_WORKING_AREA(waProcessImage, 2048);
 static THD_FUNCTION(ProcessImage, arg) {
 
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-	uint8_t *img_buff_ptr;
-	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
-
+	uint8_t *img_buff_1;
+	uint8_t *img_buff_2;
+	uint8_t image_red[IMAGE_BUFFER_SIZE], image_blue[IMAGE_BUFFER_SIZE], image_green[IMAGE_BUFFER_SIZE] = {0};
     while(1){
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
 		//gets the pointer to the array filled with the last image in RGB565    
-		img_buff_ptr = dcmi_get_last_image_ptr();
+		img_buff_1 = dcmi_get_first_buffer_ptr();
+        img_buff_2 = dcmi_get_second_buffer_ptr();
 
-		/*
-		*	To complete
-		*/
+		//Extracts only the red pixels
+		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i+=2){
+			//extracts first 5bits of the first byte
+			//takes nothing from the second byte
+			image_red[i/2] = (uint8_t)img_buff_1[i]&0xF8;
+			image_blue[i/2] = (((uint8_t)img_buff_2[i]&0x1F)<< 3);
+			image_green[i/2] = (((uint8_t)img_buff_1[i]&0x07)<< 5)+(((uint8_t)img_buff_2[i]&0xE0)>> 5);
+		}
+      red = color_line(image_red);
+      blue = color_line(image_blue);
+      green = color_line(image_green);
     }
 }
 
-float get_distance_cm(void){
-	return distance_cm;
+int get_color_red(void){
+	return red;
+}
+int get_color_blue(void){
+	return blue;
+}
+int get_color_green(void){
+	return green;
+}
+
+uint16_t get_line_position(void){
+	return line_position;
 }
 
 void process_image_start(void){
