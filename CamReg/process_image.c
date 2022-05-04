@@ -71,10 +71,8 @@ static THD_FUNCTION(ProcessImage, arg) {
 		img_buff_1 = dcmi_get_first_buffer_ptr();
         img_buff_2 = dcmi_get_second_buffer_ptr();
 
-		//Extracts only the red pixels
+		//Extracts red, blue and green
 		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i+=2){
-			//extracts first 5bits of the first byte
-			//takes nothing from the second byte
 			image_red[i/2] = (uint8_t)img_buff_1[i]&0xF8;
 			image_blue[i/2] = (((uint8_t)img_buff_2[i]&0x1F)<< 3);
 			image_green[i/2] = (((uint8_t)img_buff_1[i]&0x07)<< 5)+(((uint8_t)img_buff_2[i]&0xE0)>> 5);

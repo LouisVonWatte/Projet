@@ -26,6 +26,8 @@
 #define WHEEL_PERIMETER 12.9	//about 1000 steps
 #define ROBOT_SIZE 7.1
 
+//Hello this is leds message
+
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
