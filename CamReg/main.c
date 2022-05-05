@@ -113,6 +113,7 @@ int main(void)
 	pi_regulator_start();
 	process_image_start();
 
+
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
 	calibrate_ir();
@@ -121,9 +122,11 @@ int main(void)
     while (1) {
 
 //    	static int led = 0;
-//
+////
 //    	int s = get_selector();
-//
+//    	s++;
+//    	s*=1100;
+//    	s/=16;
 //
 //    	    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
 //    	    		stop();
@@ -238,32 +241,40 @@ int main(void)
 //    			left_motor_set_speed(0);
 
 
-       int   rouge_max = 300 ; // le bit 6 pose probleme cad (64), lit vert et rouge a bit faible et que le rouge mais mal a bit fort
-       int   bleu_max = 150 ;   // ?????
-       int   vert_max = 300 ;  // vert et rouge se confondent
+//       int   rouge_max = 300 ; // le bit 6 pose probleme cad (64), lit vert et rouge a bit faible et que le rouge mais mal a bit fort
+//       int   bleu_max = 300 ;   // ?????
+//       int   vert_max = 100 ;  // vert et rouge se confondent
 
-       if( get_color_blue() > bleu_max) {
-           	    		set_led(LED7, 1);
-           	    		set_led(LED5, 0);
-           	    		set_led(LED3, 0);
-           	    		chThdSleepMilliseconds(2000);
-           	    		continue;
-           	    	}else if(get_color_red() > rouge_max) {
-           	    		set_led(LED3, 1);
-           	    		set_led(LED7, 0);
-           	    		set_led(LED5, 0);
-           	    	  //  chThdSleepMilliseconds(2000);
-           	    	    continue;
-           	    	} else if(get_color_green() > vert_max) {
-           	    	    set_led(LED5, 1);
-           	    	    set_led(LED7, 0);
-           	    	    set_led(LED3, 0);
-           	    	    chThdSleepMilliseconds(2000);
-           	    	    continue;
-           	    	}else{
-           	    	    clear_leds();
-           	    	}
 
+
+
+      int r = get_color_red();
+      int b = get_color_blue();
+      int v = get_color_green();
+//       if( get_color_blue() > bleu_max) {
+//           	    		set_led(LED7, 1);
+//           	    		set_led(LED5, 0);
+//           	    		set_led(LED3, 0);
+//           	    		chThdSleepMilliseconds(2000);
+//           	    		continue;
+//           	    	}else if(get_color_red() > rouge_max) {
+//           	    		set_led(LED3, 1);
+//           	    		set_led(LED7, 0);
+//           	    		set_led(LED5, 0);
+//           	    	  //  chThdSleepMilliseconds(2000);
+//           	    	    continue;
+//           	    	} else if(get_color_green() > vert_max) {
+//           	    	    set_led(LED5, 1);
+//           	    	    set_led(LED7, 0);
+//           	    	    set_led(LED3, 0);
+//           	    	    chThdSleepMilliseconds(2000);
+//           	    	    continue;
+//           	    	}else{
+//           	    	    clear_leds();
+//           	    	}
+
+       chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
+       chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
     }
 }
 

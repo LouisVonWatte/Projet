@@ -24,7 +24,7 @@ uint8_t color_line(uint8_t *buffer){
 
 	uint32_t mean_color = 0;
 
-	for(uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
+	for(uint16_t i = IMAGE_BUFFER_SIZE/4  ; i < ( IMAGE_BUFFER_SIZE*3/4)  ; i++){
 			mean_color += buffer[i];
 		}
 		mean_color /= IMAGE_BUFFER_SIZE;
@@ -67,17 +67,21 @@ static THD_FUNCTION(ProcessImage, arg) {
     while(1){
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
-        img_buff_1 = dcmi_get_first_buffer_ptr();
+        img_buff_1  = dcmi_get_last_image_ptr();
+//        img_buff_1 = dcmi_get_first_buffer_ptr();
         img_buff_2 = dcmi_get_second_buffer_ptr();
 
-		//Extracts only the red pixels
-		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i+=2){
+
+		for(uint16_t i = 0 ; i < ( 2*IMAGE_BUFFER_SIZE) ; i+=2){
 			//extracts first 5bits of the first byte
 			//takes nothing from the second byte
 			image_red[i/2] = (uint8_t)img_buff_1[i]&0xF8;
 			image_blue[i/2] = (((uint8_t)img_buff_2[i]&0x1F)<< 5);
-			image_green[i/2] = (((uint8_t)img_buff_1[i]&0x07)<< 5)+(((uint8_t)img_buff_2[i]&0xE0)>> 3);
+			image_green[i/2] = (((uint8_t)img_buff_1[i]&0x07)<< 5) | (((uint8_t)img_buff_2[i]&0xE0)>> 3);
+
+
 		}
+
       red = color_line(image_red);
       blue = color_line(image_blue); //color
       green = color_line(image_green);
