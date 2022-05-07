@@ -122,21 +122,10 @@ int main(void)
 //    		led = 0;
 //    	}
 
-//		set_rgb_led(0, 30, 20, 10);
-//		set_rgb_led(1, 10, 20, 30);
-//		set_rgb_led(2, 0, 30, 10);
-//		set_rgb_led(3, 30, 0, 30);
 
     	int r = get_color_red();
     	int v = get_color_green();
     	int b = get_color_blue();
-
-
-
-
-       //int   diff = 20 ; // le bit 6 pose probleme cad (64), lit vert et rouge a bit faible et que le rouge mais mal a bit fort
-//       int   bleu_max = 30 ;   // ?????
-//       int   vert_max = 30 ;  // vert et rouge se confondent
 
        if( (b-r)&&(b-v) > 30 ) {
            	    		set_rgb_led(0, 0, 0, 15);
@@ -160,27 +149,8 @@ int main(void)
            	    	    clear_leds();
            	    	}
 
-//                           if( (b-v)&&(r-v) > diff ) {
-//                 	    		set_rgb_led(0, 15, 0, 15);
-//                 	   //	chThdSleepMilliseconds(2000);
-//                 	    		continue;
-//                 	    	}else if( (r-b)&&(v-b) > diff ) {
-//                 	    		set_rgb_led(1, 15, 15, 0);
-//      		           //	    chThdSleepMilliseconds(2000);
-//      		           	    continue;
-//                 	    	} else if( (v-r)&&(b-r) > 20 ) {
-//                 	    	   set_rgb_led(2, 0, 15, 15);
-//      		           //   chThdSleepMilliseconds(2000);
-//      		           	   continue;
-//                 	    	}else{
-//                 	    	    clear_leds();
-//                 	    	}
-
-
-
-
-		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
-		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
+//		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
+//		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
 
     }
 }
