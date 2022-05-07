@@ -9,7 +9,7 @@
 #include <process_image.h>
 
 
-static int red, blue, green  = 0;
+static int red, blue, green  = 111;
 static uint16_t line_position = IMAGE_BUFFER_SIZE/2;	//middle
 
 //semaphore
@@ -24,7 +24,7 @@ uint8_t color_line(uint8_t *buffer){
 
 	uint32_t mean_color = 0;
 
-	for(uint16_t i = IMAGE_BUFFER_SIZE/4  ; i < ( IMAGE_BUFFER_SIZE*3/4)  ; i++){
+	for(uint16_t i =  (IMAGE_BUFFER_SIZE)/4 ; i < (IMAGE_BUFFER_SIZE)*3/4  ; i++){
 			mean_color += buffer[i];
 		}
 		mean_color /= IMAGE_BUFFER_SIZE;
@@ -52,6 +52,7 @@ static THD_FUNCTION(CaptureImage, arg) {
 		wait_image_ready();
 		//signals an image has been captured
 		chBSemSignal(&image_ready_sem);
+
     }
 }
 
@@ -61,23 +62,19 @@ static THD_FUNCTION(ProcessImage, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-	uint8_t *img_buff_1;
-	uint8_t *img_buff_2;
+	uint8_t *img_buff;
 	uint8_t image_red[IMAGE_BUFFER_SIZE], image_blue[IMAGE_BUFFER_SIZE], image_green[IMAGE_BUFFER_SIZE] = {0};
     while(1){
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
-        img_buff_1  = dcmi_get_last_image_ptr();
-//        img_buff_1 = dcmi_get_first_buffer_ptr();
-        img_buff_2 = dcmi_get_second_buffer_ptr();
+        img_buff  = dcmi_get_last_image_ptr();
 
-
-		for(uint16_t i = 0 ; i < ( 2*IMAGE_BUFFER_SIZE) ; i+=2){
+		for(uint16_t i = 0 ; i < 2*(IMAGE_BUFFER_SIZE) ; i+=2){
 			//extracts first 5bits of the first byte
 			//takes nothing from the second byte
-			image_red[i/2] = (uint8_t)img_buff_1[i]&0xF8;
-			image_blue[i/2] = (((uint8_t)img_buff_2[i]&0x1F)<< 5);
-			image_green[i/2] = (((uint8_t)img_buff_1[i]&0x07)<< 5) | (((uint8_t)img_buff_2[i]&0xE0)>> 3);
+			image_red[i/2] = (uint8_t)img_buff[i]&0xF8;
+			image_blue[i/2] = (((uint8_t)img_buff[i+1]&0x1F) <<3 );
+			image_green[i/2] = (((uint8_t)img_buff[i]&0x07)<< 5) | (((uint8_t)img_buff[i+1]&0xE0)>> 3);
 
 
 		}

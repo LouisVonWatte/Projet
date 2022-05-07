@@ -5,6 +5,7 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "chprintf.h"
 #include "memory_protection.h"
 #include <usbcfg.h>
 #include <main.h>
@@ -66,13 +67,13 @@ int main(void)
     proximity_start();
 	//stars the threads for the pi regulator and the processing of the image
 //	pi_regulator_start();
-//	process_image_start();
+	process_image_start();
 
 
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
 	calibrate_ir();
-	calibration_motor();
+//	calibration_motor();
 
 	dac_start();
     playMelodyStart();
@@ -121,36 +122,65 @@ int main(void)
 //    		led = 0;
 //    	}
 
-		set_rgb_led(0, 10, 10, 00);
-		set_rgb_led(1, 10, 00, 10);
-		set_rgb_led(2, 00, 10, 10);
-		set_rgb_led(3, 10, 10, 10);
+//		set_rgb_led(0, 30, 20, 10);
+//		set_rgb_led(1, 10, 20, 30);
+//		set_rgb_led(2, 0, 30, 10);
+//		set_rgb_led(3, 30, 0, 30);
 
-//       int   rouge_max = 300 ; // le bit 6 pose probleme cad (64), lit vert et rouge a bit faible et que le rouge mais mal a bit fort
-//       int   bleu_max = 150 ;   // ?????
-//       int   vert_max = 300 ;  // vert et rouge se confondent
-//
-//       if( get_color_blue() > bleu_max) {
-//           	    		set_led(LED7, 1);
-//           	    		set_led(LED5, 0);
-//           	    		set_led(LED3, 0);
-//           	    		chThdSleepMilliseconds(2000);
-//           	    		continue;
-//           	    	}else if(get_color_red() > rouge_max) {
-//           	    		set_led(LED3, 1);
-//           	    		set_led(LED7, 0);
-//           	    		set_led(LED5, 0);
-//           	    	  //  chThdSleepMilliseconds(2000);
-//           	    	    continue;
-//           	    	} else if(get_color_green() > vert_max) {
-//           	    	    set_led(LED5, 1);
-//           	    	    set_led(LED7, 0);
-//           	    	    set_led(LED3, 0);
-//           	    	    chThdSleepMilliseconds(2000);
-//           	    	    continue;
-//           	    	}else{
-//           	    	    clear_leds();
-//           	    	}
+    	int r = get_color_red();
+    	int v = get_color_green();
+    	int b = get_color_blue();
+
+
+
+
+       //int   diff = 20 ; // le bit 6 pose probleme cad (64), lit vert et rouge a bit faible et que le rouge mais mal a bit fort
+//       int   bleu_max = 30 ;   // ?????
+//       int   vert_max = 30 ;  // vert et rouge se confondent
+
+       if( (b-r)&&(b-v) > 30 ) {
+           	    		set_rgb_led(0, 0, 0, 15);
+           	    		set_rgb_led(1, 0, 0, 0);
+           	    		set_rgb_led(2, 0, 0, 0);
+           	    	//	chThdSleepMilliseconds(2000);
+           	    		continue;
+           	    	}else if( (r-b)&&(r-v) > 20 ) {
+           	    		set_rgb_led(0, 0, 0, 0);
+           	    		set_rgb_led(1, 15, 0, 0);
+           	    		set_rgb_led(2, 0, 0, 0);
+		           //	    chThdSleepMilliseconds(2000);
+		           	    continue;
+           	    	} else if( (v-r)&&(v-b) > 10 ) {
+           	    		set_rgb_led(0, 0, 0, 0);
+           	    		set_rgb_led(1, 0, 0, 0);
+           	    		set_rgb_led(2, 0, 15, 0);
+		           //   chThdSleepMilliseconds(2000);
+		           	   continue;
+           	    	}else{
+           	    	    clear_leds();
+           	    	}
+
+//                           if( (b-v)&&(r-v) > diff ) {
+//                 	    		set_rgb_led(0, 15, 0, 15);
+//                 	   //	chThdSleepMilliseconds(2000);
+//                 	    		continue;
+//                 	    	}else if( (r-b)&&(v-b) > diff ) {
+//                 	    		set_rgb_led(1, 15, 15, 0);
+//      		           //	    chThdSleepMilliseconds(2000);
+//      		           	    continue;
+//                 	    	} else if( (v-r)&&(b-r) > 20 ) {
+//                 	    	   set_rgb_led(2, 0, 15, 15);
+//      		           //   chThdSleepMilliseconds(2000);
+//      		           	   continue;
+//                 	    	}else{
+//                 	    	    clear_leds();
+//                 	    	}
+
+
+
+
+		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
+		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
 
     }
 }
