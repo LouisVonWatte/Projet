@@ -10,7 +10,9 @@
 #include <leds.h>
 #include <sensors/proximity.h>
 
-
+int conv(int ir_value){
+	return 422 / ir_value;
+}
 
 void stop(void){
 	right_motor_set_speed(0);
@@ -51,10 +53,18 @@ void keep(double distance){
 }
 
 void calibration_motor(void){
-	while(get_prox(0) >= 100){
-		move(300, LEFT, 0);
+	chThdSleepMilliseconds(3000);
+
+	while(get_prox(0) > 100 || get_prox(7) > 100){
+		move(300, RIGHT, 10);
 	}
-	while(get_prox(7) >= 100){
-		move(300, RIGHT, 0);
+
+	while(get_prox(4) > get_prox(3)){
+		move(300, RIGHT, 1);
 	}
+	while(get_prox(3) > get_prox(4)){
+		move(300, LEFT, 1);
+	}
+
+	stop();
 }
