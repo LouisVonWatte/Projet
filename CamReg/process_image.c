@@ -9,8 +9,7 @@
 #include <process_image.h>
 
 
-static int red, blue, green  = 0;
-static uint16_t line_position = IMAGE_BUFFER_SIZE/2;	//middle
+static uint8_t color = 0;
 
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
@@ -73,30 +72,25 @@ static THD_FUNCTION(ProcessImage, arg) {
 			image_red[i/2] = (uint8_t)img_buff[i]&0xF8;
 			image_blue[i/2] = (((uint8_t)img_buff[i+1]&0x1F) <<3 );
 			image_green[i/2] = (((uint8_t)img_buff[i]&0x07)<< 5) | (((uint8_t)img_buff[i+1]&0xE0)>> 3);
-
-
 		}
 
-	  // return the RGB between 0 to 255
-      red = color_line(image_red);
-      blue = color_line(image_blue);
-      green = color_line(image_green);
+		if( (color_line(image_red)-color_line(image_blue))&&(color_line(image_red)-color_line(image_green)) > 40 ) {
+			color = 1; //red
+		continue;
+		}else if( (color_line(image_green)-color_line(image_red))&&(color_line(image_green)-color_line(image_blue)) > 10 ) {
+			color = 2; // green
+		continue;
+		} else if( (color_line(image_blue)-color_line(image_red))&&(color_line(image_blue)-color_line(image_green)) > 40 ) {
+			color = 3; // blue
+		continue;
+		}else{
+			color = 0;
+		}
 
     }
 }
-
-int get_color_red(void){
-	return red;
-}
-int get_color_blue(void){
-	return blue;
-}
-int get_color_green(void){
-	return green;
-}
-
-uint16_t get_line_position(void){
-	return line_position;
+uint8_t get_color(void){
+	return color;
 }
 
 void process_image_start(void){

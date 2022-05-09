@@ -21,7 +21,7 @@
 #include <audio/play_melody.h>
 #include <audio/audio_thread.h>
 
-#include <pi_regulator.h>
+
 #include <process_image.h>
 
 messagebus_t bus;
@@ -65,10 +65,8 @@ int main(void)
 	motors_init();
 	//start IR sensors
     proximity_start();
-	//stars the threads for the pi regulator and the processing of the image
-//	pi_regulator_start();
+	//stars the threads for the processing of the image and ...(motor)
 	process_image_start();
-
 
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
@@ -80,78 +78,150 @@ int main(void)
 	spi_comm_start();
 
     while (1) {
-//
-//    	static int led = 0;
-//
-//    	int s = get_selector();
+
+    	static int led_l = 0;
+    	static int led_r = 0;
+
+    	int s = get_selector();
 //    	s++;
 //    	s*=1100;
 //    	s/=16;
-//
 //    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
 //    		stop();
 //    		continue;
 //    	}
+
+    	if (s == 0 ){
+    		set_rgb_led(0, 15, 0, 0);
+			set_rgb_led(1, 15, 0, 0);
+			set_rgb_led(2, 15, 0, 0);
+			set_rgb_led(3, 15, 0, 0);
+    		 continue;
+    	}else if (s == 4 ){
+    		set_rgb_led(0, 0, 15, 0);
+			set_rgb_led(1, 0, 15, 0);
+			set_rgb_led(2, 0, 15, 0);
+			set_rgb_led(3, 0, 15, 0);
+			continue;
+    	}else if(s == 8 ) {
+    		set_rgb_led(0, 0, 0, 15);
+			set_rgb_led(1, 0, 0, 15);
+			set_rgb_led(2, 0, 0, 15);
+			set_rgb_led(3, 0, 0, 15);
+			continue;
+    	}else{
+    		clear_leds();
+    	}
+
+
+//    	if( get_color()==3 ) {
+//    	           	    		set_rgb_led(0, 0, 0, 15);
+//    	           	    		set_rgb_led(1, 0, 0, 0);
+//    	           	    		set_rgb_led(2, 0, 0, 0);
+//    	           	    	//	chThdSleepMilliseconds(2000);
+//    	           	    		continue;
+//    	           	    	}else if( get_color()==1 ) {
+//    	           	    		set_rgb_led(0, 0, 0, 0);
+//    	           	    		set_rgb_led(1, 15, 0, 0);
+//    	           	    		set_rgb_led(2, 0, 0, 0);
+//    			           //	 chThdSleepMilliseconds(2000);
+//    			           	    continue;
+//    	           	    	} else if( get_color()==2 ) {
+//    	           	    		set_rgb_led(0, 0, 0, 0);
+//    	           	    		set_rgb_led(1, 0, 0, 0);
+//    	           	    		set_rgb_led(2, 0, 15, 0);
+//    			           //   chThdSleepMilliseconds(2000);
+//    			           	   continue;
+//    	           	    	}else{
+//    	           	    	    clear_leds();
+//    	           	    	}
+
+
+
+
+//    	int r = get_color_red();
+//    	int v = get_color_green();
+//    	int b = get_color_blue();
+
+//       if( (b-r)&&(b-v) > 40 ) {
+//           	    		set_rgb_led(0, 0, 0, 15);
+//           	    		set_rgb_led(1, 0, 0, 0);
+//           	    		set_rgb_led(2, 0, 0, 0);
+//           	    	//	chThdSleepMilliseconds(2000);
+//           	    		continue;
+//           	    	}else if( (r-b)&&(r-v) > 40 ) {
+//           	    		set_rgb_led(0, 0, 0, 0);
+//           	    		set_rgb_led(1, 15, 0, 0);
+//           	    		set_rgb_led(2, 0, 0, 0);
+//		           //	 chThdSleepMilliseconds(2000);
+//		           	    continue;
+//           	    	} else if( (v-r)&&(v-b) > 10 ) {
+//           	    		set_rgb_led(0, 0, 0, 0);
+//           	    		set_rgb_led(1, 0, 0, 0);
+//           	    		set_rgb_led(2, 0, 15, 0);
+//		           //   chThdSleepMilliseconds(2000);
+//		           	   continue;
+//           	    	}else{
+//           	    	    clear_leds();
+//           	    	}
+
+//		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
+//		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
+ //      chprintf((BaseSequentialStream *)&SD3, "S3=%1d\r\n\n", ir);j
 //
-//    	if(get_prox(2) >= 100){
+//    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
 //    		move(s, FORWARD, 0);
-//    	} else {
+//    	} else if(get_prox(5) < 100){
 //    		move(s, FORWARD, 0);
-//    		keep(7 / 2);
+//    		keep(4);
+//    		move(s, LEFT, 323);
+//    		move(s, FORWARD, 0);
+//    		keep(7);
+//    		set_led(LED7, 0);
+//    	} else if(get_prox(2) < 100){
+//    		move(s, FORWARD, 0);
+//    		keep(4);
 //    		move(s, RIGHT, 323);
 //    		move(s, FORWARD, 0);
 //    		keep(7);
 //    		set_led(LED3, 0);
 //    	}
-//
-//    	if(get_prox(1) < 100){
-//    		if(led <= 15000){
-//    			set_led(LED3, 1);
-//    			led++;
+
+//    	if(get_prox(6) < 100){
+//    		if(led_l <= 15000){
+//    			set_led(LED7, 1);
+//    			led_l++;
 //    			continue;
 //    		}
-//    		if(led <= 30000 && led > 15000){
-//    			set_led(LED3, 0);
-//    			led++;
+//    		if(led_l <= 30000 && led_l > 15000){
+//    			set_led(LED7, 0);
+//    			led_l++;
 //    		}
-//    		if(led > 30000){
-//    			led = 0;
+//    		if(led_l > 30000){
+//    			led_l = 0;
+//    		}
+//    	} else {
+//    		set_led(LED7, 0);
+//    		led_l = 0;
+//    	}
+//
+//    	if(get_prox(1) < 100){
+//    		if(led_r <= 15000){
+//    			set_led(LED3, 1);
+//    			led_r++;
+//    			continue;
+//    		}
+//    		if(led_r <= 30000 && led_r > 15000){
+//    			set_led(LED3, 0);
+//    			led_r++;
+//    		}
+//    		if(led_r > 30000){
+//    			led_r = 0;
 //    		}
 //    	} else {
 //    		set_led(LED3, 0);
-//    		led = 0;
+//    		led_r = 0;
 //    	}
-
-
-    	int r = get_color_red();
-    	int v = get_color_green();
-    	int b = get_color_blue();
-
-       if( (b-r)&&(b-v) > 50 ) {
-           	    		set_rgb_led(0, 0, 0, 15);
-           	    		set_rgb_led(1, 0, 0, 0);
-           	    		set_rgb_led(2, 0, 0, 0);
-           	    	//	chThdSleepMilliseconds(2000);
-           	    		continue;
-           	    	}else if( (r-b)&&(r-v) > 40 ) {
-           	    		set_rgb_led(0, 0, 0, 0);
-           	    		set_rgb_led(1, 15, 0, 0);
-           	    		set_rgb_led(2, 0, 0, 0);
-		           //	    chThdSleepMilliseconds(2000);
-		           	    continue;
-           	    	} else if( (v-r)&&(v-b) > 10 ) {
-           	    		set_rgb_led(0, 0, 0, 0);
-           	    		set_rgb_led(1, 0, 0, 0);
-           	    		set_rgb_led(2, 0, 15, 0);
-		           //   chThdSleepMilliseconds(2000);
-		           	   continue;
-           	    	}else{
-           	    	    clear_leds();
-           	    	}
-
-//		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
-//		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
- //      chprintf((BaseSequentialStream *)&SD3, "S3=%1d\r\n\n", ir);j
 
     }
 }
