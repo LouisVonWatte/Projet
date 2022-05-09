@@ -122,7 +122,7 @@ int main(void)
 //    		led = 0;
 //    	}
 
-
+        int ir = get_prox(2);
     	int r = get_color_red();
     	int v = get_color_green();
     	int b = get_color_blue();
@@ -151,6 +151,8 @@ int main(void)
 
 //		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
 //		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
+        chprintf((BaseSequentialStream *)&SD3, "S3=%1d\r\n\n", ir);
+       //  chprintf((BaseSequentialStream *)&SDU3, "%3d,", prox_values.ambient[i]);
 
     }
 }
