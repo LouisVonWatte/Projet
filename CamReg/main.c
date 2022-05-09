@@ -122,18 +122,18 @@ int main(void)
 //    		led = 0;
 //    	}
 
-        int ir = get_prox(2);
+
     	int r = get_color_red();
     	int v = get_color_green();
     	int b = get_color_blue();
 
-       if( (b-r)&&(b-v) > 30 ) {
+       if( (b-r)&&(b-v) > 50 ) {
            	    		set_rgb_led(0, 0, 0, 15);
            	    		set_rgb_led(1, 0, 0, 0);
            	    		set_rgb_led(2, 0, 0, 0);
            	    	//	chThdSleepMilliseconds(2000);
            	    		continue;
-           	    	}else if( (r-b)&&(r-v) > 20 ) {
+           	    	}else if( (r-b)&&(r-v) > 40 ) {
            	    		set_rgb_led(0, 0, 0, 0);
            	    		set_rgb_led(1, 15, 0, 0);
            	    		set_rgb_led(2, 0, 0, 0);
@@ -151,8 +151,7 @@ int main(void)
 
 //		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
 //		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
-        chprintf((BaseSequentialStream *)&SD3, "S3=%1d\r\n\n", ir);
-       //  chprintf((BaseSequentialStream *)&SDU3, "%3d,", prox_values.ambient[i]);
+ //      chprintf((BaseSequentialStream *)&SD3, "S3=%1d\r\n\n", ir);j
 
     }
 }
