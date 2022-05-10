@@ -10,9 +10,6 @@
 #include <leds.h>
 #include <sensors/proximity.h>
 
-
-static int led_l = 0;
-static int led_r = 0;
 static int s = 400;
 
 void stop(void){
@@ -28,16 +25,16 @@ static THD_FUNCTION(MotorDirection, arg) {
     (void)arg;
 
     while  (1){
-        if(get_prox(2) >= 100 && get_prox(5) >= 100){
+        if(get_prox(2) >= 100 && get_prox(5) >= 100){								//forwards if both walls
         	move(s, FORWARD, 0);
-        } else if(get_prox(5) < 100){
+        } else if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//left if missing left wall
 			move(s, FORWARD, 0);
 			keep(4);
 			move(s, LEFT, 323);
 			move(s, FORWARD, 0);
 			keep(7);
 			set_led(LED7, 0);
-        } else if(get_prox(2) < 100){
+        } else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//right if missing right wall
 			move(s, FORWARD, 0);
 			keep(4);
 			move(s, RIGHT, 323);
@@ -45,46 +42,10 @@ static THD_FUNCTION(MotorDirection, arg) {
 			keep(7);
 			set_led(LED3, 0);
         }
-
-        if(get_prox(6) < 100){
-        	if(led_l <= 15000){
-        		set_led(LED7, 1);
-        		led_l++;
-        		continue;
-        	}
-        	if(led_l <= 30000 && led_l > 15000){
-        		set_led(LED7, 0);
-        		led_l++;
-        	}
-        	if(led_l > 30000){
-        		led_l = 0;
-        	}
-        } else {
-        	set_led(LED7, 0);
-        	led_l = 0;
-        }
-
-        if(get_prox(1) < 100){
-        	if(led_r <= 15000){
-        		set_led(LED3, 1);
-        		led_r++;
-        		continue;
-        	}
-        	if(led_r <= 30000 && led_r > 15000){
-        		set_led(LED3, 0);
-        		led_r++;
-        	}
-        	if(led_r > 30000){
-        		led_r = 0;
-        	}
-        } else {
-        	set_led(LED3, 0);
-        	led_r = 0;
-        }
     }
 }
 
-void move(int speed, int direction, int steps){
+void move(int speed, int direction, int steps){		//move forwards or turn in the "direction" at "speed" for an amount of "steps"
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
 
@@ -106,7 +67,7 @@ void move(int speed, int direction, int steps){
 	set_front_led(1);
 }
 
-void keep(double distance){
+void keep(double distance){		//keep going forwards for "distance" in cm
 	int steps = distance * 1000 / (2*M_PI*2.05);
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
@@ -118,18 +79,17 @@ void keep(double distance){
 void calibration_motor(void){
 	chThdSleepMilliseconds(3000);
 
-	while(get_prox(0) > 100 || get_prox(7) > 100){
-		move(300, RIGHT, 10);
-	}
-
-	while(get_prox(4) > get_prox(3)){
+	while(get_prox(0) > 80 || get_prox(7) > 80){
 		move(300, RIGHT, 1);
 	}
 
-	while(get_prox(3) > get_prox(4)){
-		move(300, LEFT, 1);
+	while(get_prox(4) > get_prox(3)){
+		move(50, RIGHT, 0);
 	}
 
+//	while(get_prox(3) > get_prox(4)){
+//		move(50, LEFT, 0);
+//	}
 	stop();
 }
 void motor_start(void){

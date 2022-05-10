@@ -51,6 +51,8 @@ int main(void)
     chSysInit();
     mpu_init();
 
+	messagebus_init(&bus, &bus_lock, &bus_condvar);
+
     serial_start(); 	//starts the serial communication
     usb_start();		//start the USB communication
     dcmi_start();		//starts the camera
@@ -58,17 +60,19 @@ int main(void)
 	motors_init();  	//inits the motors
     proximity_start();  //start IR sensors
     playMelodyStart();  // start the melody
-    dac_start();
+    //dac_start();
     spi_comm_start();   // start the RGB led
 
 	//stars the threads for the processing of the image and motor
 	process_image_start();
-	motor_start();
-
-	messagebus_init(&bus, &bus_lock, &bus_condvar);
+	//motor_start();
 
 	calibrate_ir();
 	calibration_motor();
+	chThdSleepMilliseconds(3000);
+	move(300, FORWARD, 0);
+	chThdSleepMilliseconds(4000);
+	stop();
 
 	while(1){
 		static int s_rouge = 0;
