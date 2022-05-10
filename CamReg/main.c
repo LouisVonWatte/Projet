@@ -20,8 +20,6 @@
 #include <selector.h>
 #include <audio/play_melody.h>
 #include <audio/audio_thread.h>
-
-
 #include <process_image.h>
 
 messagebus_t bus;
