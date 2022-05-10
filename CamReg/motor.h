@@ -13,4 +13,6 @@ void keep(double distance);
 
 void calibration_motor(void);
 
+void motor_start(void);
+
 #endif /* MOTOR_H_ */

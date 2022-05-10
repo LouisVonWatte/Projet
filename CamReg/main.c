@@ -70,7 +70,7 @@ int main(void)
 
 	calibrate_ir();
 //	calibration_motor();
-
+	motor_start();
 	dac_start();
     playMelodyStart();
 	spi_comm_start();
@@ -134,9 +134,6 @@ int main(void)
 
     while (1) {
 
-//    	static int led_l = 0;
-//    	static int led_r = 0;
-
 
 //    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
 //    		move(s, FORWARD, 0);
@@ -191,7 +188,6 @@ int main(void)
 //    		set_led(LED3, 0);
 //    		led_r = 0;
 //    	}
-
     }
 }
 
