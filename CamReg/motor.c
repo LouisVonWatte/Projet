@@ -20,13 +20,27 @@ void stop(void){
 }
 
 void check_turn (void){
+
+		int max_val = 0;
+
         if(get_prox(2) >= 100 && get_prox(5) >= 100){								//forwards if both walls
         	move(s, FORWARD, 0);
-        } else if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//left if missing left wall
-			while(get_prox(2) > get_prox(0) + 10){
+        } else if(get_prox(5) < 70 && get_prox(0) > 70 && get_prox(7) > 70){		//left if missing left wall
+			while(get_prox(7) < 200){
 	        	move(s, FORWARD, 0);
 			}
-			move(s, LEFT, 323);
+			move(s, LEFT, 200);
+			while(get_prox(2) > max_val){
+				max_val = get_prox(2);
+				move(s, LEFT, 20);
+			}
+			move(s, FORWARD, 0);
+			keep(4);
+        } else if(get_prox(2) < 70 && get_prox(0) > 70 && get_prox(7) > 70){		//right if missing right wall
+			while(get_prox(7) < get_prox(5)){
+	        	move(s, FORWARD, 0);
+			}
+			move(s, RIGHT, 200);
 			while(get_prox(4) > get_prox(3)){
 				move(50, RIGHT, 0);
 			}
@@ -36,22 +50,24 @@ void check_turn (void){
 			}
 			move(s, FORWARD, 0);
 			keep(7);
-			set_led(LED7, 0);
-        } else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//right if missing right wall
-			while(get_prox(5) > get_prox(7) + 10){
-	        	move(s, FORWARD, 0);
-			}
-			move(s, RIGHT, 323);
-			while(get_prox(4) > get_prox(3)){
-				move(50, RIGHT, 0);
-			}
-
-			while(get_prox(3) > get_prox(4)){
-				move(50, LEFT, 0);
-			}
+        } else if(get_prox(5) < 70 && get_prox(0) < 70 && get_prox(7) < 70){		//left look
 			move(s, FORWARD, 0);
-			keep(7);
-			set_led(LED3, 0);
+			keep(5);
+        	move(s, LEFT, 323);
+        	stop();
+        	chThdSleepMilliseconds(1500);
+        	move(s, RIGHT, 323);
+			move(s, FORWARD, 0);
+			keep(5);
+        } else if(get_prox(2) < 70 && get_prox(0) < 70 && get_prox(7) < 70){		//right look
+			move(s, FORWARD, 0);
+			keep(5);
+        	move(s, RIGHT, 323);
+        	stop();
+        	chThdSleepMilliseconds(1500);
+        	move(s, LEFT, 323);
+			move(s, FORWARD, 0);
+			keep(5);
         }
     }
 void move(int speed, int direction, int steps){		//move forwards or turn in the "direction" at "speed" for an amount of "steps"
@@ -112,5 +128,12 @@ void go_straight(void){
 	} else {
 		right_motor_set_speed(s);
 		left_motor_set_speed(s);
+//		while(get_prox(1) > get_prox(6)){
+//			move(50, LEFT, 0);
+//		}
+//		while(get_prox(6) > get_prox(1)){
+//			move(50, RIGHT, 0);
+//		}
 	}
+
 }
