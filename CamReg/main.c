@@ -60,75 +60,76 @@ int main(void)
 	motors_init();  	//inits the motors
     proximity_start();  //start IR sensors
     playMelodyStart();  // start the melody
-    //dac_start();
+    dac_start();
     spi_comm_start();   // start the RGB led
 
-	//stars the threads for the processing of the image and motor
-	process_image_start();
-	//motor_start();
 
 	calibrate_ir();
 	calibration_motor();
-	chThdSleepMilliseconds(3000);
-	move(300, FORWARD, 0);
-	chThdSleepMilliseconds(4000);
-	stop();
+
+	//stars the threads for the processing of the image and motor
+	process_image_start();
 
 	while(1){
-		static int s_rouge = 0;
-		static int s_vert = 0;
-		static int s_bleu = 0;
-		int s = get_selector();
 
-		if(s == 4){
-			set_rgb_led(0, 15, 0, 0);
-			set_rgb_led(3, 15, 0, 0);
-			s_rouge++;
-			s_vert = 0;
-			s_bleu = 0;
-		}
-		if(s == 8){
-			set_rgb_led(0, 0, 15, 0);
-			set_rgb_led(3, 0, 15, 0);
-			s_rouge = 0;
-			s_vert++;
-			s_bleu = 0;
-		}
-		if(s == 12){
-			set_rgb_led(0, 0, 0, 15);
-			set_rgb_led(3, 0, 0, 15);
-			s_rouge = 0;
-			s_vert = 0;
-			s_bleu++;
-		}
-		if(s != 4 && s!= 8 && s!= 12){
-			clear_leds();
-			s_rouge = 0;
-			s_vert = 0;
-			s_bleu = 0;
-		}
+		check_turn();
+		go_straight();
 
-		if(s_rouge >= 1000000){
-			set_rgb_led(0, 15, 0, 0);
-			set_rgb_led(1, 15, 0, 0);
-			set_rgb_led(2, 15, 0, 0);
-			set_rgb_led(3, 15, 0, 0);
-			break;
-		}
-		if(s_vert >= 1000000){
-			set_rgb_led(0, 0, 15, 0);
-			set_rgb_led(1, 0, 15, 0);
-			set_rgb_led(2, 0, 15, 0);
-			set_rgb_led(3, 0, 15, 0);
-			break;
-		}
-		if(s_bleu >= 1000000){
-			set_rgb_led(0, 0, 0, 15);
-			set_rgb_led(1, 0, 0, 15);
-			set_rgb_led(2, 0, 0, 15);
-			set_rgb_led(3, 0, 0, 15);
-			break;
-		}
+//
+//		static int s_rouge = 0;
+//		static int s_vert = 0;
+//		static int s_bleu = 0;
+//		int s = get_selector();
+//
+//		if(s == 4){
+//			set_rgb_led(0, 15, 0, 0);
+//			set_rgb_led(3, 15, 0, 0);
+//			s_rouge++;
+//			s_vert = 0;
+//			s_bleu = 0;
+//		}
+//		if(s == 8){
+//			set_rgb_led(0, 0, 15, 0);
+//			set_rgb_led(3, 0, 15, 0);
+//			s_rouge = 0;
+//			s_vert++;
+//			s_bleu = 0;
+//		}
+//		if(s == 12){
+//			set_rgb_led(0, 0, 0, 15);
+//			set_rgb_led(3, 0, 0, 15);
+//			s_rouge = 0;
+//			s_vert = 0;
+//			s_bleu++;
+//		}
+//		if(s != 4 && s!= 8 && s!= 12){
+//			clear_leds();
+//			s_rouge = 0;
+//			s_vert = 0;
+//			s_bleu = 0;
+//		}
+//
+//		if(s_rouge >= 1000000){
+//			set_rgb_led(0, 15, 0, 0);
+//			set_rgb_led(1, 15, 0, 0);
+//			set_rgb_led(2, 15, 0, 0);
+//			set_rgb_led(3, 15, 0, 0);
+//			break;
+//		}
+//		if(s_vert >= 1000000){
+//			set_rgb_led(0, 0, 15, 0);
+//			set_rgb_led(1, 0, 15, 0);
+//			set_rgb_led(2, 0, 15, 0);
+//			set_rgb_led(3, 0, 15, 0);
+//			break;
+//		}
+//		if(s_bleu >= 1000000){
+//			set_rgb_led(0, 0, 0, 15);
+//			set_rgb_led(1, 0, 0, 15);
+//			set_rgb_led(2, 0, 0, 15);
+//			set_rgb_led(3, 0, 0, 15);
+//			break;
+//		}
 	}
 }
 

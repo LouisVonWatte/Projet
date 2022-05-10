@@ -18,33 +18,42 @@ void stop(void){
 	set_body_led(1);
 	set_front_led(0);
 }
-static THD_WORKING_AREA(waMotorDirection, 2048);
-static THD_FUNCTION(MotorDirection, arg) {
 
-    chRegSetThreadName(__FUNCTION__);
-    (void)arg;
-
-    while  (1){
+void check_turn (void){
         if(get_prox(2) >= 100 && get_prox(5) >= 100){								//forwards if both walls
         	move(s, FORWARD, 0);
         } else if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//left if missing left wall
-			move(s, FORWARD, 0);
-			keep(4);
+			while(get_prox(2) > get_prox(0) + 10){
+	        	move(s, FORWARD, 0);
+			}
 			move(s, LEFT, 323);
+			while(get_prox(4) > get_prox(3)){
+				move(50, RIGHT, 0);
+			}
+
+			while(get_prox(3) > get_prox(4)){
+				move(50, LEFT, 0);
+			}
 			move(s, FORWARD, 0);
 			keep(7);
 			set_led(LED7, 0);
         } else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//right if missing right wall
-			move(s, FORWARD, 0);
-			keep(4);
+			while(get_prox(5) > get_prox(7) + 10){
+	        	move(s, FORWARD, 0);
+			}
 			move(s, RIGHT, 323);
+			while(get_prox(4) > get_prox(3)){
+				move(50, RIGHT, 0);
+			}
+
+			while(get_prox(3) > get_prox(4)){
+				move(50, LEFT, 0);
+			}
 			move(s, FORWARD, 0);
 			keep(7);
 			set_led(LED3, 0);
         }
     }
-}
-
 void move(int speed, int direction, int steps){		//move forwards or turn in the "direction" at "speed" for an amount of "steps"
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
@@ -92,6 +101,16 @@ void calibration_motor(void){
 //	}
 	stop();
 }
-void motor_start(void){
-	chThdCreateStatic(waMotorDirection, sizeof(waMotorDirection), NORMALPRIO, MotorDirection, NULL);
+
+void go_straight(void){
+	if(get_prox(5) > get_prox(2) + 10){
+		right_motor_set_speed(s-20);
+		left_motor_set_speed(s+20);
+	} else if(get_prox(5) + 10 < get_prox(2)){
+		right_motor_set_speed(s+20);
+		left_motor_set_speed(s-20);
+	} else {
+		right_motor_set_speed(s);
+		left_motor_set_speed(s);
+	}
 }

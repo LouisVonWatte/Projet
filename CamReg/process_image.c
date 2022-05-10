@@ -14,7 +14,6 @@ static uint8_t color = 0;
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
 
-
 // take an average of the RGB value on one line
 uint8_t color_line(uint8_t *buffer){
 
@@ -86,7 +85,6 @@ static THD_FUNCTION(ProcessImage, arg) {
 		}else{
 			color = 0;
 		}
-
     }
 }
 uint8_t get_color(void){
