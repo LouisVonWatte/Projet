@@ -19,7 +19,6 @@
 #include <spi_comm.h>
 #include <selector.h>
 #include <audio/play_melody.h>
-#include <audio/audio_thread.h>
 #include <process_image.h>
 
 messagebus_t bus;
@@ -52,28 +51,24 @@ int main(void)
     chSysInit();
     mpu_init();
 
-    //starts the serial communication
-    serial_start();
-    //start the USB communication
-    usb_start();
-    //starts the camera
-    dcmi_start();
+    serial_start(); 	//starts the serial communication
+    usb_start();		//start the USB communication
+    dcmi_start();		//starts the camera
 	po8030_start();
-	//inits the motors
-	motors_init();
-	//start IR sensors
-    proximity_start();
-	//stars the threads for the processing of the image and ...(motor)
+	motors_init();  	//inits the motors
+    proximity_start();  //start IR sensors
+    playMelodyStart();  // start the melody
+    dac_start();
+    spi_comm_start();   // start the RGB led
+
+	//stars the threads for the processing of the image and motor
 	process_image_start();
+	motor_start();
 
 	messagebus_init(&bus, &bus_lock, &bus_condvar);
 
 	calibrate_ir();
-//	calibration_motor();
-	motor_start();
-	dac_start();
-    playMelodyStart();
-	spi_comm_start();
+	calibration_motor();
 
 	while(1){
 		static int s_rouge = 0;
@@ -131,64 +126,6 @@ int main(void)
 			break;
 		}
 	}
-
-    while (1) {
-
-
-//    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
-//    		move(s, FORWARD, 0);
-//    	} else if(get_prox(5) < 100){
-//    		move(s, FORWARD, 0);
-//    		keep(4);
-//    		move(s, LEFT, 323);
-//    		move(s, FORWARD, 0);
-//    		keep(7);
-//    		set_led(LED7, 0);
-//    	} else if(get_prox(2) < 100){
-//    		move(s, FORWARD, 0);
-//    		keep(4);
-//    		move(s, RIGHT, 323);
-//    		move(s, FORWARD, 0);
-//    		keep(7);
-//    		set_led(LED3, 0);
-//    	}
-
-//    	if(get_prox(6) < 100){
-//    		if(led_l <= 15000){
-//    			set_led(LED7, 1);
-//    			led_l++;
-//    			continue;
-//    		}
-//    		if(led_l <= 30000 && led_l > 15000){
-//    			set_led(LED7, 0);
-//    			led_l++;
-//    		}
-//    		if(led_l > 30000){
-//    			led_l = 0;
-//    		}
-//    	} else {
-//    		set_led(LED7, 0);
-//    		led_l = 0;
-//    	}
-//
-//    	if(get_prox(1) < 100){
-//    		if(led_r <= 15000){
-//    			set_led(LED3, 1);
-//    			led_r++;
-//    			continue;
-//    		}
-//    		if(led_r <= 30000 && led_r > 15000){
-//    			set_led(LED3, 0);
-//    			led_r++;
-//    		}
-//    		if(led_r > 30000){
-//    			led_r = 0;
-//    		}
-//    	} else {
-//    		set_led(LED3, 0);
-//    		led_r = 0;
-//    	}
-    }
 }
 
 #define STACK_CHK_GUARD 0xe2dee396
