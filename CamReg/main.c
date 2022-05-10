@@ -83,13 +83,6 @@ int main(void)
     	static int led_r = 0;
 
     	int s = get_selector();
-//    	s++;
-//    	s*=1100;
-//    	s/=16;
-//    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
-//    		stop();
-//    		continue;
-//    	}
 
     	if (s == 0 ){
     		set_rgb_led(0, 15, 0, 0);
