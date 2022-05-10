@@ -114,59 +114,6 @@ int main(void)
     	}
 
 
-//    	if( get_color()==3 ) {
-//    	           	    		set_rgb_led(0, 0, 0, 15);
-//    	           	    		set_rgb_led(1, 0, 0, 0);
-//    	           	    		set_rgb_led(2, 0, 0, 0);
-//    	           	    	//	chThdSleepMilliseconds(2000);
-//    	           	    		continue;
-//    	           	    	}else if( get_color()==1 ) {
-//    	           	    		set_rgb_led(0, 0, 0, 0);
-//    	           	    		set_rgb_led(1, 15, 0, 0);
-//    	           	    		set_rgb_led(2, 0, 0, 0);
-//    			           //	 chThdSleepMilliseconds(2000);
-//    			           	    continue;
-//    	           	    	} else if( get_color()==2 ) {
-//    	           	    		set_rgb_led(0, 0, 0, 0);
-//    	           	    		set_rgb_led(1, 0, 0, 0);
-//    	           	    		set_rgb_led(2, 0, 15, 0);
-//    			           //   chThdSleepMilliseconds(2000);
-//    			           	   continue;
-//    	           	    	}else{
-//    	           	    	    clear_leds();
-//    	           	    	}
-
-
-//    	int r = get_color_red();
-//    	int v = get_color_green();
-//    	int b = get_color_blue();
-
-//       if( (b-r)&&(b-v) > 40 ) {
-//           	    		set_rgb_led(0, 0, 0, 15);
-//           	    		set_rgb_led(1, 0, 0, 0);
-//           	    		set_rgb_led(2, 0, 0, 0);
-//           	    	//	chThdSleepMilliseconds(2000);
-//           	    		continue;
-//           	    	}else if( (r-b)&&(r-v) > 40 ) {
-//           	    		set_rgb_led(0, 0, 0, 0);
-//           	    		set_rgb_led(1, 15, 0, 0);
-//           	    		set_rgb_led(2, 0, 0, 0);
-//		           //	 chThdSleepMilliseconds(2000);
-//		           	    continue;
-//           	    	} else if( (v-r)&&(v-b) > 10 ) {
-//           	    		set_rgb_led(0, 0, 0, 0);
-//           	    		set_rgb_led(1, 0, 0, 0);
-//           	    		set_rgb_led(2, 0, 15, 0);
-//		           //   chThdSleepMilliseconds(2000);
-//		           	   continue;
-//           	    	}else{
-//           	    	    clear_leds();
-//           	    	}
-
-//		 chprintf((BaseSequentialStream *)&SD3, "CAMERA\r\n");
-//		 chprintf((BaseSequentialStream *)&SD3, "R=%3d, G=%3d, B=%3d\r\n\n", r, v, b);
- //      chprintf((BaseSequentialStream *)&SD3, "S3=%1d\r\n\n", ir);j
-//
 //    	if(get_prox(2) >= 100 && get_prox(5) >= 100){
 //    		move(s, FORWARD, 0);
 //    	} else if(get_prox(5) < 100){
