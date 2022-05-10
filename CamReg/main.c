@@ -137,8 +137,6 @@ int main(void)
 //    	           	    	}
 
 
-
-
 //    	int r = get_color_red();
 //    	int v = get_color_green();
 //    	int b = get_color_blue();

@@ -10,10 +10,6 @@
 #include <leds.h>
 #include <sensors/proximity.h>
 
-int conv(int ir_value){
-	return 422 / ir_value;
-}
-
 void stop(void){
 	right_motor_set_speed(0);
 	left_motor_set_speed(0);
