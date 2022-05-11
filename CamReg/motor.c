@@ -9,6 +9,7 @@
 #include <motor.h>
 #include <leds.h>
 #include <sensors/proximity.h>
+#include <process_image.h>
 
 static int s = 400;
 
@@ -19,9 +20,9 @@ void stop(void){
 	set_front_led(0);
 }
 
-void check_turn (void){
+void check_turn (int color){
 
-		int max_val = 0;
+//		int max_val = 0;
 
         if(get_prox(2) >= 100 && get_prox(5) >= 100){								//forwards if both walls
         	move(s, FORWARD, 0);
@@ -29,34 +30,45 @@ void check_turn (void){
 			while(get_prox(7) < 200){
 	        	move(s, FORWARD, 0);
 			}
-			move(s, LEFT, 200);
-			while(get_prox(2) > max_val){
-				max_val = get_prox(2);
-				move(s, LEFT, 20);
-			}
+			move(s, LEFT, 323);
+//			while(get_prox(2) > max_val){
+//				max_val = get_prox(2);
+//				move(s, LEFT, 20);
+//			}
 			move(s, FORWARD, 0);
 			keep(4);
         } else if(get_prox(2) < 70 && get_prox(0) > 70 && get_prox(7) > 70){		//right if missing right wall
 			while(get_prox(7) < get_prox(5)){
 	        	move(s, FORWARD, 0);
 			}
-			move(s, RIGHT, 200);
-			while(get_prox(4) > get_prox(3)){
-				move(50, RIGHT, 0);
-			}
-
-			while(get_prox(3) > get_prox(4)){
-				move(50, LEFT, 0);
-			}
+			move(s, RIGHT, 323);
+//			while(get_prox(4) > get_prox(3)){
+//				move(50, RIGHT, 0);
+//			}
+//
+//			while(get_prox(3) > get_prox(4)){
+//				move(50, LEFT, 0);
+//			}
 			move(s, FORWARD, 0);
-			keep(7);
+			keep(4);
         } else if(get_prox(5) < 70 && get_prox(0) < 70 && get_prox(7) < 70){		//left look
 			move(s, FORWARD, 0);
 			keep(5);
         	move(s, LEFT, 323);
         	stop();
-        	chThdSleepMilliseconds(1500);
-        	move(s, RIGHT, 323);
+        	if(color == get_color()){
+        		move(s, FORWARD, 0);
+        		keep(5);
+            	move(s, RIGHT, 646);
+            	stop();
+            	chThdSleepMilliseconds(1500);
+            	move(s, FORWARD, 0);
+				keep(5);
+	        	move(s, LEFT, 323);
+        	} else {
+            	chThdSleepMilliseconds(1500);
+            	move(s, LEFT, 323);
+        	}
 			move(s, FORWARD, 0);
 			keep(5);
         } else if(get_prox(2) < 70 && get_prox(0) < 70 && get_prox(7) < 70){		//right look
@@ -64,12 +76,21 @@ void check_turn (void){
 			keep(5);
         	move(s, RIGHT, 323);
         	stop();
-        	chThdSleepMilliseconds(1500);
-        	move(s, LEFT, 323);
-			move(s, FORWARD, 0);
-			keep(5);
+        	if(color == get_color()){
+				move(s, FORWARD, 0);
+				keep(5);
+				move(s, LEFT, 646);
+				stop();
+				chThdSleepMilliseconds(1500);
+				move(s, FORWARD, 0);
+				keep(5);
+				move(s, RIGHT, 323);
+			} else {
+				chThdSleepMilliseconds(1500);
+				move(s, RIGHT, 323);
         }
     }
+}
 void move(int speed, int direction, int steps){		//move forwards or turn in the "direction" at "speed" for an amount of "steps"
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
@@ -135,5 +156,4 @@ void go_straight(void){
 //			move(50, RIGHT, 0);
 //		}
 	}
-
 }
