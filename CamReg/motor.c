@@ -20,81 +20,75 @@ void stop(void){
 	set_front_led(0);
 }
 
-void check_turn (int color){
+int check_turn (int color){
 
-//		int max_val = 0;
-
-        if(get_prox(2) >= 100 && get_prox(5) >= 100){								//forwards if both walls
-        	move(s, FORWARD, 0);
-        } else if(get_prox(5) < 70 && get_prox(0) > 70 && get_prox(7) > 70){		//left if missing left wall
-			while(get_prox(7) < 200){
-	        	move(s, FORWARD, 0);
-			}
-			move(s, LEFT, 323);
-//			while(get_prox(2) > max_val){
-//				max_val = get_prox(2);
-//				move(s, LEFT, 20);
-//			}
+	if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//left if missing left wall
+		while(get_prox(7) < 400){
 			move(s, FORWARD, 0);
-			keep(4);
-        } else if(get_prox(2) < 70 && get_prox(0) > 70 && get_prox(7) > 70){		//right if missing right wall
-			while(get_prox(7) < get_prox(5)){
-	        	move(s, FORWARD, 0);
-			}
+		}
+		move(s, LEFT, 323);
+		move(s, FORWARD, 0);
+		keep(6);
+	} else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//right if missing right wall
+		while(get_prox(0) < 400){
+			move(s, FORWARD, 0);
+		}
+		move(s, RIGHT, 323);
+		move(s, FORWARD, 0);
+		keep(6);
+	} else if(get_prox(5) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//left look
+		move(s, FORWARD, 0);
+		keep(4);
+		move(s, LEFT, 323);
+		stop();
+		chThdSleepMilliseconds(1000);
+		if(color == get_color()){
+			move(s, FORWARD, 0);
+			keep(9);
+			move(s, RIGHT, 646);
+			stop();						//make a full stop
+			return 1;
+		} else {
+			chThdSleepMilliseconds(1500);
 			move(s, RIGHT, 323);
-//			while(get_prox(4) > get_prox(3)){
-//				move(50, RIGHT, 0);
-//			}
-//
-//			while(get_prox(3) > get_prox(4)){
-//				move(50, LEFT, 0);
-//			}
-			move(s, FORWARD, 0);
-			keep(4);
-        } else if(get_prox(5) < 70 && get_prox(0) < 70 && get_prox(7) < 70){		//left look
 			move(s, FORWARD, 0);
 			keep(5);
-        	move(s, LEFT, 323);
-        	stop();
-        	if(color == get_color()){
-        		move(s, FORWARD, 0);
-        		keep(5);
-            	move(s, RIGHT, 646);
-            	stop();
-            	chThdSleepMilliseconds(1500);
-            	move(s, FORWARD, 0);
-				keep(5);
-	        	move(s, LEFT, 323);
-        	} else {
-            	chThdSleepMilliseconds(1500);
-            	move(s, LEFT, 323);
-        	}
+		}
+	} else if(get_prox(2) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//right look
+		move(s, FORWARD, 0);
+		keep(4);
+		move(s, RIGHT, 323);
+		stop();
+		chThdSleepMilliseconds(1000);
+		if(color == get_color()){
+			move(s, FORWARD, 0);
+			keep(9);
+			move(s, LEFT, 646);
+			stop();		//make a full stop
+			return 1;
+		} else {
+			chThdSleepMilliseconds(1500);
+			move(s, LEFT, 323);
 			move(s, FORWARD, 0);
 			keep(5);
-        } else if(get_prox(2) < 70 && get_prox(0) < 70 && get_prox(7) < 70){		//right look
-			move(s, FORWARD, 0);
-			keep(5);
-        	move(s, RIGHT, 323);
-        	stop();
-        	if(color == get_color()){
-				move(s, FORWARD, 0);
-				keep(5);
-				move(s, LEFT, 646);
-				stop();
-				chThdSleepMilliseconds(1500);
-				move(s, FORWARD, 0);
-				keep(5);
-				move(s, RIGHT, 323);
-			} else {
-				chThdSleepMilliseconds(1500);
-				move(s, RIGHT, 323);
-        }
-    }
+		}
+	} else if(get_prox(0) > 200 && get_prox(1) > 200 && get_prox(2) > 200 && get_prox(6) > 200 && get_prox(6) > 200 && get_prox(7) > 200){
+		set_body_led(1);
+		set_front_led(0);
+		set_rgb_led(0, 15, 15, 15);
+		set_rgb_led(1, 15, 15, 15);
+		set_rgb_led(2, 15, 15, 15);
+		set_rgb_led(3, 15, 15, 15);
+		stop();
+		return 2;
+	}
+    return 0;
 }
 void move(int speed, int direction, int steps){		//move forwards or turn in the "direction" at "speed" for an amount of "steps"
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
-
+	set_body_led(0);
+	set_front_led(1);
 	if(direction == FORWARD){
 		right_motor_set_speed(speed);
 		left_motor_set_speed(speed);
@@ -109,8 +103,6 @@ void move(int speed, int direction, int steps){		//move forwards or turn in the 
 		left_motor_set_speed(-speed);
 	while(right_motor_get_pos() < steps && left_motor_get_pos() > -steps);
 	}
-	set_body_led(0);
-	set_front_led(1);
 }
 
 void keep(double distance){		//keep going forwards for "distance" in cm
@@ -123,16 +115,15 @@ void keep(double distance){		//keep going forwards for "distance" in cm
 }
 
 void calibration_motor(void){
-	chThdSleepMilliseconds(3000);
+	chThdSleepMilliseconds(2000);
 
-	while(get_prox(0) > 80 || get_prox(7) > 80){
+	while(get_prox(0) > 100 || get_prox(7) > 100){
 		move(300, RIGHT, 1);
 	}
 
-	while(get_prox(4) > get_prox(3)){
+	while(get_prox(6) > get_prox(1)){
 		move(50, RIGHT, 0);
 	}
-
 //	while(get_prox(3) > get_prox(4)){
 //		move(50, LEFT, 0);
 //	}
@@ -140,20 +131,14 @@ void calibration_motor(void){
 }
 
 void go_straight(void){
-	if(get_prox(5) > get_prox(2) + 10){
+	if(get_prox(5) + get_prox(6) > get_prox(2) + get_prox(1) + 100){
 		right_motor_set_speed(s-20);
 		left_motor_set_speed(s+20);
-	} else if(get_prox(5) + 10 < get_prox(2)){
+	} else if(get_prox(5) + get_prox(6) + 100 < get_prox(2) + get_prox(1)){
 		right_motor_set_speed(s+20);
 		left_motor_set_speed(s-20);
 	} else {
 		right_motor_set_speed(s);
 		left_motor_set_speed(s);
-//		while(get_prox(1) > get_prox(6)){
-//			move(50, LEFT, 0);
-//		}
-//		while(get_prox(6) > get_prox(1)){
-//			move(50, RIGHT, 0);
-//		}
 	}
 }

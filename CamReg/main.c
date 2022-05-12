@@ -59,18 +59,17 @@ int main(void)
 	po8030_start();
 	motors_init();  	//inits the motors
     proximity_start();  //start IR sensors
-//    playMelodyStart();  // start the melody
-//    dac_start();
+    playMelodyStart();  // start the melody
+    dac_start();
     spi_comm_start();   // start the RGB led
 
 
 	calibrate_ir();
-	calibration_motor();
-
 	//stars the threads for the processing of the image and motor
 	process_image_start();
 
 	int color = 0;
+	int quit = 0;
 
 	while(1){
 
@@ -132,11 +131,20 @@ int main(void)
 			break;
 		}
 	}
-
-	while(1){
-
-		check_turn(color);
+	calibration_motor();
+	playMelody(MARIO_START, ML_SIMPLE_PLAY, NULL);
+	waitMelodyHasFinished();
+	set_body_led(0);
+	set_front_led(1);
+	while(quit == 0){
 		go_straight();
+		quit = check_turn(color);
+	}
+	if(quit == 1){
+		playMelody(MARIO_FLAG, ML_SIMPLE_PLAY, NULL);
+	}
+	if(quit == 2){
+		playMelody(MARIO_DEATH, ML_SIMPLE_PLAY, NULL);
 	}
 }
 

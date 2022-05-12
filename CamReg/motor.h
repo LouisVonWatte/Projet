@@ -5,7 +5,7 @@
 #define RIGHT 1
 #define LEFT 2
 
-void check_turn(int color);
+int check_turn (int color);
 
 void stop(void);
 

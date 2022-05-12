@@ -73,10 +73,10 @@ static THD_FUNCTION(ProcessImage, arg) {
 			image_green[i/2] = (((uint8_t)img_buff[i]&0x07)<< 5) | (((uint8_t)img_buff[i+1]&0xE0)>> 3);
 		}
 
-		if( (color_line(image_red)-color_line(image_blue))&&(color_line(image_red)-color_line(image_green)) > 40 ) {
+		if( (color_line(image_red)-color_line(image_blue))&&(color_line(image_red)-color_line(image_green)) > 30 ) {
 			color = 1; //red
 		continue;
-		}else if( (color_line(image_green)-color_line(image_red))&&(color_line(image_green)-color_line(image_blue)) > 10 ) {
+		}else if( (color_line(image_green)-color_line(image_red))&&(color_line(image_green)-color_line(image_blue)) > 5 ) {
 			color = 2; // green
 		continue;
 		} else if( (color_line(image_blue)-color_line(image_red))&&(color_line(image_blue)-color_line(image_green)) > 40 ) {
