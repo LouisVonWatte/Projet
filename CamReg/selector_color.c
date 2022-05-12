@@ -8,9 +8,14 @@
 #include <leds.h>
 #include <selector.h>
 
+int color = 0;
 
-int get_selector_color(void){
-	int color = 0;
+static THD_WORKING_AREA(waSelectorColor, 256);
+static THD_FUNCTION(SelectorColor, arg) {
+
+    chRegSetThreadName(__FUNCTION__);
+    (void)arg;
+
 	while(1){
 
 		static int s_rouge = 0;
@@ -71,5 +76,12 @@ int get_selector_color(void){
 			break;
 		}
 	}
+}
+
+int get_selector_color(void){
 	return color;
+}
+
+void selector_color_start(void){
+	chThdCreateStatic(waSelectorColor, sizeof(waSelectorColor), NORMALPRIO+1, SelectorColor, NULL);
 }

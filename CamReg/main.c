@@ -68,6 +68,7 @@ int main(void)
 
 	calibrate_ir();
 	//stars the threads for the processing of the image and motor
+	selector_color_start();
 	process_image_start();
 
 	int color = 0;
@@ -76,23 +77,24 @@ int main(void)
 	color = get_selector_color();
 
 	calibration_motor();
+//
+//	playMelody(MARIO_START, ML_SIMPLE_PLAY, NULL);
+//	waitMelodyHasFinished();
+//
+//	set_body_led(0);
+//	set_front_led(1);
+//
+//	while(quit == 0){
+//		go_straight();
+//		quit = check_turn(color);
+//	}
 
-	playMelody(MARIO_START, ML_SIMPLE_PLAY, NULL);
-	waitMelodyHasFinished();
-
-	set_body_led(0);
-	set_front_led(1);
-
-	while(quit == 0){
-		go_straight();
-		quit = check_turn(color);
-	}
-	if(quit == 1){
-		playMelody(MARIO_FLAG, ML_SIMPLE_PLAY, NULL);
-	}
-	if(quit == 2){
-		playMelody(MARIO_DEATH, ML_SIMPLE_PLAY, NULL);
-	}
+//	if(quit == 1){
+//		playMelody(MARIO_FLAG, ML_SIMPLE_PLAY, NULL);
+//	}
+//	if(quit == 2){
+//		playMelody(MARIO_DEATH, ML_SIMPLE_PLAY, NULL);
+//	}
 }
 
 #define STACK_CHK_GUARD 0xe2dee396

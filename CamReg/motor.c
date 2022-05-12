@@ -72,7 +72,7 @@ int check_turn (int color){
 			move(s, FORWARD, 0);
 			keep(5);
 		}
-	} else if(get_prox(0) > 200 && get_prox(1) > 200 && get_prox(2) > 200 && get_prox(6) > 200 && get_prox(6) > 200 && get_prox(7) > 200){
+	} else if(get_prox(0) > 400 && get_prox(1) > 200 && get_prox(2) > 200 && get_prox(6) > 200 && get_prox(6) > 200 && get_prox(7) > 400){
 		set_body_led(1);
 		set_front_led(0);
 		set_rgb_led(0, 15, 15, 15);
