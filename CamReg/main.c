@@ -19,7 +19,9 @@
 #include <spi_comm.h>
 #include <selector.h>
 #include <audio/play_melody.h>
+#include <audio/audio_thread.h>
 #include <process_image.h>
+#include <selector_color.h>
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -71,71 +73,16 @@ int main(void)
 	int color = 0;
 	int quit = 0;
 
-	while(1){
+	color = get_selector_color();
 
-		static int s_rouge = 0;
-		static int s_vert = 0;
-		static int s_bleu = 0;
-		int s = get_selector();
-
-		if(s == 4){
-			set_rgb_led(0, 15, 0, 0);
-			set_rgb_led(3, 15, 0, 0);
-			s_rouge++;
-			s_vert = 0;
-			s_bleu = 0;
-		}
-		if(s == 8){
-			set_rgb_led(0, 0, 15, 0);
-			set_rgb_led(3, 0, 15, 0);
-			s_rouge = 0;
-			s_vert++;
-			s_bleu = 0;
-		}
-		if(s == 12){
-			set_rgb_led(0, 0, 0, 15);
-			set_rgb_led(3, 0, 0, 15);
-			s_rouge = 0;
-			s_vert = 0;
-			s_bleu++;
-		}
-		if(s != 4 && s!= 8 && s!= 12){
-			clear_leds();
-			s_rouge = 0;
-			s_vert = 0;
-			s_bleu = 0;
-		}
-
-		if(s_rouge >= 1000000){
-			set_rgb_led(0, 15, 0, 0);
-			set_rgb_led(1, 15, 0, 0);
-			set_rgb_led(2, 15, 0, 0);
-			set_rgb_led(3, 15, 0, 0);
-			color = RED;
-			break;
-		}
-		if(s_vert >= 1000000){
-			set_rgb_led(0, 0, 15, 0);
-			set_rgb_led(1, 0, 15, 0);
-			set_rgb_led(2, 0, 15, 0);
-			set_rgb_led(3, 0, 15, 0);
-			color = GREEN;
-			break;
-		}
-		if(s_bleu >= 1000000){
-			set_rgb_led(0, 0, 0, 15);
-			set_rgb_led(1, 0, 0, 15);
-			set_rgb_led(2, 0, 0, 15);
-			set_rgb_led(3, 0, 0, 15);
-			color = BLUE;
-			break;
-		}
-	}
 	calibration_motor();
+
 	playMelody(MARIO_START, ML_SIMPLE_PLAY, NULL);
 	waitMelodyHasFinished();
+
 	set_body_led(0);
 	set_front_led(1);
+
 	while(quit == 0){
 		go_straight();
 		quit = check_turn(color);
