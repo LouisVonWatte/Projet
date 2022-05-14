@@ -57,7 +57,7 @@ static THD_FUNCTION(SelectorColor, arg) {
 			set_rgb_led(2, 15, 0, 0);
 			set_rgb_led(3, 15, 0, 0);
 			color = RED;
-			break;
+			chThdExit(0);
 		}
 		if(s_vert >= 1000000){
 			set_rgb_led(0, 0, 15, 0);
@@ -65,7 +65,7 @@ static THD_FUNCTION(SelectorColor, arg) {
 			set_rgb_led(2, 0, 15, 0);
 			set_rgb_led(3, 0, 15, 0);
 			color = GREEN;
-			break;
+			chThdExit(0);
 		}
 		if(s_bleu >= 1000000){
 			set_rgb_led(0, 0, 0, 15);
@@ -73,7 +73,7 @@ static THD_FUNCTION(SelectorColor, arg) {
 			set_rgb_led(2, 0, 0, 15);
 			set_rgb_led(3, 0, 0, 15);
 			color = BLUE;
-			break;
+			chThdExit(0);
 		}
 	}
 }

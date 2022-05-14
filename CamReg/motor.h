@@ -4,6 +4,7 @@
 #define FORWARD 0
 #define RIGHT 1
 #define LEFT 2
+#define BACKWARDS 3
 
 int check_turn (int color);
 
