@@ -86,6 +86,7 @@ int main(void)
 
 	while(quit == 0){
 
+//		chprintf((BaseSequentialStream *)&SDU1, "%2d,", get_prox(1), get_calibrated_prox(1));
 		go_straight();
 		quit = check_turn(color);
 		}

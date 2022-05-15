@@ -79,7 +79,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 		}else if( (color_line(image_green)-color_line(image_red))&&(color_line(image_green)-color_line(image_blue)) > 5 ) {
 			color = 2; // green
 		continue;
-		} else if( (color_line(image_blue)-color_line(image_red))&&(color_line(image_blue)-color_line(image_green)) > 40 ) {
+		} else if( (color_line(image_blue)-color_line(image_red))&&(color_line(image_blue)-color_line(image_green)) > 30 ) {
 			color = 3; // blue
 		continue;
 		}else{

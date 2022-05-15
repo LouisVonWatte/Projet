@@ -22,23 +22,27 @@ void stop(void){
 
 int check_turn (int color){
 
-	if(get_prox(5) < 50 && get_prox(0) > 10 && get_prox(7) > 10){				//left if missing left wall
-		while(get_prox(7) < 200){
+
+	if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){				//left if missing left wall
+		while(get_prox(7) < 300){
 			move(s, FORWARD, 0);
 		}
 		move(s, LEFT, 323);
 		move(s, FORWARD, 0);
 		keep(7);
-	} else if(get_prox(2) < 40 && get_prox(0) > 10 && get_prox(7) > 10){		//right if missing right wall
-		while(get_prox(0) < 200){
+	} else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//right if missing right wall
+		while(get_prox(0) < 300){
 			move(s, FORWARD, 0);
 		}
 		move(s, RIGHT, 323);
 		move(s, FORWARD, 0);
 		keep(7);
-	} else if(get_prox(5) < 20 && get_prox(0) < 6 && get_prox(7) < 6){		//left look
+	} else if(get_prox(5) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//left look
 		move(s, FORWARD, 0);
 		keep(4);
+		if(get_prox(1) < 125){
+			move(s, RIGHT, 50);
+		}
 		move(s, LEFT, 323);
 		stop();
 		chThdSleepMilliseconds(1000);
@@ -51,12 +55,15 @@ int check_turn (int color){
 		} else {
 			move(s, RIGHT, 323);
 			move(s, FORWARD, 0);
-			keep(7);
+			keep(6);
 		}
-	} else if(get_prox(2) < 20 && get_prox(0) < 6 && get_prox(7) < 6){		//right look
+	} else if(get_prox(2) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//right look
 		move(s, FORWARD, 0);
 		keep(4);
 		move(s, RIGHT, 323);
+		if(get_prox(6) < 125){
+			move(s, LEFT, 50);
+		}
 		stop();
 		chThdSleepMilliseconds(1000);
 		if(color == get_color()){
@@ -68,9 +75,9 @@ int check_turn (int color){
 		} else {
 			move(s, LEFT, 323);
 			move(s, FORWARD, 0);
-			keep(7);
+			keep(6);
 		}
-	} else if(get_prox(0) > 400 && get_prox(1) > 200 && get_prox(2) > 200 && get_prox(6) > 200 && get_prox(6) > 200 && get_prox(7) > 400){
+	} else if(get_prox(0) > 200 && get_prox(1) > 100 && get_prox(2) > 100 && get_prox(6) > 100 && get_prox(6) > 100 && get_prox(7) > 200){
 		set_body_led(1);
 		set_front_led(0);
 		set_rgb_led(0, 15, 15, 15);
@@ -132,13 +139,20 @@ void calibration_motor(void){
 
 void go_straight(void){
 	if(get_prox(5) + get_prox(6) > get_prox(2) + get_prox(1) + 100){
-		right_motor_set_speed(s-50);
-		left_motor_set_speed(s+50);
+		right_motor_set_speed(s-40);
+		left_motor_set_speed(s+40);
 	} else if(get_prox(5) + get_prox(6) + 100 < get_prox(2) + get_prox(1)){
-		right_motor_set_speed(s+50);
-		left_motor_set_speed(s-50);
+		right_motor_set_speed(s+40);
+		left_motor_set_speed(s-40);
 	} else {
 		right_motor_set_speed(s);
 		left_motor_set_speed(s);
+	}
+
+	if(get_prox(6) > 325){
+		move(300, RIGHT, 20);
+	}
+	if(get_prox(1) > 325){
+		move(300, LEFT, 20);
 	}
 }
