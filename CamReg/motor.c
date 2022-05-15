@@ -70,7 +70,7 @@ int check_turn (int color){
 			move(s, FORWARD, 0);
 			keep(9);
 			move(s, LEFT, 646);
-			stop();						//make a full stop
+			stop();
 			return 1;															//quit, found the arrival
 		} else {
 			move(s, LEFT, 323);
