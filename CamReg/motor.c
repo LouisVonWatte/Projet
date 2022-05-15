@@ -11,7 +11,7 @@
 #include <sensors/proximity.h>
 #include <process_image.h>
 
-int s = 800;
+int s = 800;																	//speed of robot (0-1100)
 
 void stop(void){																//stops the robot, turns on body led and front led off
 	right_motor_set_speed(0);
@@ -21,7 +21,6 @@ void stop(void){																//stops the robot, turns on body led and front l
 }
 
 int check_turn (int color){
-
 
 	if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){			//turn left if missing left wall
 		while(get_prox(7) < 300){
@@ -89,7 +88,7 @@ int check_turn (int color){
 	}
     return 0;
 }
-void move(int speed, int direction, int steps){			//move forwards or turn in the "direction" at "speed" for an amount of "steps"
+void move(int speed, int direction, int steps){									//move forwards or turn in the "direction" at "speed" for an amount of "steps"
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
 	set_body_led(0);
@@ -110,7 +109,7 @@ void move(int speed, int direction, int steps){			//move forwards or turn in the
 	}
 }
 
-void keep(double distance){				//keep moving for "distance" in cm
+void keep(double distance){														//keep moving for "distance" in cm
 	int steps = distance * 1000 / (2*M_PI*2.05);
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
@@ -119,7 +118,7 @@ void keep(double distance){				//keep moving for "distance" in cm
 	left_motor_set_speed(0);
 }
 
-void calibration_motor(void){			//calibrates the motor at the start to be straight
+void calibration_motor(void){													//calibrates the motor at the start to be straight
 	chThdSleepMilliseconds(2000);
 
 	while(get_prox(0) > 100 || get_prox(7) > 100){
@@ -133,7 +132,7 @@ void calibration_motor(void){			//calibrates the motor at the start to be straig
 	}
 }
 
-void go_straight(void){					//makes robot go straight to avoid walls
+void go_straight(void){															//makes robot go straight to avoid walls
 	if(get_prox(5) + get_prox(6) > get_prox(2) + get_prox(1) + 100){
 		right_motor_set_speed(s-40);
 		left_motor_set_speed(s+40);
