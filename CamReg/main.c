@@ -73,9 +73,11 @@ int main(void)
 	int color = 0;
 	int quit = 0;
 
+	//choose the color the robot will search
 	color = get_selector_color();
 	calibrate_ir();
 
+	//make the robot sraight
 	calibration_motor();
 	stop();
 	playMelody(MARIO_START, ML_SIMPLE_PLAY, NULL);
@@ -85,16 +87,14 @@ int main(void)
 	set_front_led(1);
 
 	while(quit == 0){
-
-//		chprintf((BaseSequentialStream *)&SDU1, "%2d,", get_prox(1), get_calibrated_prox(1));
 		go_straight();
 		quit = check_turn(color);
 		}
 
-	if(quit == 1){
+	if(quit == 1){										//if robot found the color
 		playMelody(MARIO_FLAG, ML_SIMPLE_PLAY, NULL);
 	}
-	if(quit == 2){
+	if(quit == 2){										//if robot found the end without seeing the color
 		playMelody(MARIO_DEATH, ML_SIMPLE_PLAY, NULL);
 	}
 }

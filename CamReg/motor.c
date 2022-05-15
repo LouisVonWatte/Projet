@@ -13,7 +13,7 @@
 
 int s = 800;
 
-void stop(void){
+void stop(void){																//stops the robot, turns on body led and front led off
 	right_motor_set_speed(0);
 	left_motor_set_speed(0);
 	set_body_led(1);
@@ -23,21 +23,21 @@ void stop(void){
 int check_turn (int color){
 
 
-	if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){				//left if missing left wall
+	if(get_prox(5) < 100 && get_prox(0) > 100 && get_prox(7) > 100){			//turn left if missing left wall
 		while(get_prox(7) < 300){
 			move(s, FORWARD, 0);
 		}
 		move(s, LEFT, 323);
 		move(s, FORWARD, 0);
 		keep(7);
-	} else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//right if missing right wall
+	} else if(get_prox(2) < 100 && get_prox(0) > 100 && get_prox(7) > 100){		//turn right if missing right wall
 		while(get_prox(0) < 300){
 			move(s, FORWARD, 0);
 		}
 		move(s, RIGHT, 323);
 		move(s, FORWARD, 0);
 		keep(7);
-	} else if(get_prox(5) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//left look
+	} else if(get_prox(5) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//left look if missing left wall and front wall
 		move(s, FORWARD, 0);
 		keep(4);
 		if(get_prox(1) < 125){
@@ -50,14 +50,14 @@ int check_turn (int color){
 			move(s, FORWARD, 0);
 			keep(9);
 			move(s, RIGHT, 646);
-			stop();						//make a full stop
-			return 1;
+			stop();
+			return 1;															//quit, found the arrival
 		} else {
 			move(s, RIGHT, 323);
 			move(s, FORWARD, 0);
 			keep(6);
 		}
-	} else if(get_prox(2) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//right look
+	} else if(get_prox(2) < 150 && get_prox(0) < 80 && get_prox(7) < 80){		//right look if missing right wall and front wall
 		move(s, FORWARD, 0);
 		keep(4);
 		move(s, RIGHT, 323);
@@ -71,7 +71,7 @@ int check_turn (int color){
 			keep(9);
 			move(s, LEFT, 646);
 			stop();						//make a full stop
-			return 1;
+			return 1;															//quit, found the arrival
 		} else {
 			move(s, LEFT, 323);
 			move(s, FORWARD, 0);
@@ -85,11 +85,11 @@ int check_turn (int color){
 		set_rgb_led(2, 15, 15, 15);
 		set_rgb_led(3, 15, 15, 15);
 		stop();
-		return 2;
+		return 2;																//quit, found the end
 	}
     return 0;
 }
-void move(int speed, int direction, int steps){		//move forwards or turn in the "direction" at "speed" for an amount of "steps"
+void move(int speed, int direction, int steps){			//move forwards or turn in the "direction" at "speed" for an amount of "steps"
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
 	set_body_led(0);
@@ -108,13 +108,9 @@ void move(int speed, int direction, int steps){		//move forwards or turn in the 
 		left_motor_set_speed(-speed);
 	while(right_motor_get_pos() < steps && left_motor_get_pos() > -steps);
 	}
-	if(direction == BACKWARDS){
-		right_motor_set_speed(-speed);
-		left_motor_set_speed(-speed);
-	}
 }
 
-void keep(double distance){		//keep going forwards for "distance" in cm
+void keep(double distance){				//keep moving for "distance" in cm
 	int steps = distance * 1000 / (2*M_PI*2.05);
 	right_motor_set_pos(0);
 	left_motor_set_pos(0);
@@ -123,7 +119,7 @@ void keep(double distance){		//keep going forwards for "distance" in cm
 	left_motor_set_speed(0);
 }
 
-void calibration_motor(void){
+void calibration_motor(void){			//calibrates the motor at the start to be straight
 	chThdSleepMilliseconds(2000);
 
 	while(get_prox(0) > 100 || get_prox(7) > 100){
@@ -137,7 +133,7 @@ void calibration_motor(void){
 	}
 }
 
-void go_straight(void){
+void go_straight(void){					//makes robot go straight to avoid walls
 	if(get_prox(5) + get_prox(6) > get_prox(2) + get_prox(1) + 100){
 		right_motor_set_speed(s-40);
 		left_motor_set_speed(s+40);
